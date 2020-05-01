@@ -1,6 +1,7 @@
+require("dotenv").config();
+
 const express = require("express");
 const mongoose = require("mongoose");
-const mongooseKey = require("../credentials/universal_key.json").key;
 const path = require("path");
 const cors = require("cors");
 
@@ -8,12 +9,10 @@ const app = express();
 
 const server = require("http").Server(app);
 const io = require("socket.io")(server);
-mongoose.connect(
-  `mongodb+srv://eduardo:${mongooseKey}@cluster0-b9grj.mongodb.net/test?retryWrites=true&w=majority`,
-  {
-    useNewUrlParser: true
-  }
-);
+
+mongoose.connect(process.env.MONGO_URL, {
+  useNewUrlParser: true,
+});
 
 app.use((req, res, next) => {
   req.io = io;
@@ -30,4 +29,4 @@ app.use(
 
 app.use(require("./routes"));
 
-server.listen(3333);
+server.listen(process.env.PORT || 3333);
